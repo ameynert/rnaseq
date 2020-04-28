@@ -1025,7 +1025,7 @@ if (!params.skipAlignment) {
           publishDir "${params.outdir}/STAR", mode: 'copy',
               saveAs: {filename ->
                   if (filename.indexOf(".bam") == -1) "logs/$filename"
-                  else if (params.saveUnaligned && filename != "where_are_my_files.txt" && 'Unmapped' in filename) "unmapped/$filename"
+                  else if (params.saveUnaligned && filename != "where_are_my_files.txt" && filename =~ /Unmapped/) "unmapped/$filename"
                   else if (!params.saveAlignedIntermediates && filename == "where_are_my_files.txt") filename
                   else if (params.saveAlignedIntermediates && filename != "where_are_my_files.txt") filename
                   else null
@@ -1065,6 +1065,11 @@ if (!params.skipAlignment) {
               --outFileNamePrefix $prefix $seq_center
 
           samtools index ${prefix}Aligned.sortedByCoord.out.bam
+
+          if [ $params.saveUnaligned ]
+          then
+            gzip *Unmapped*
+          fi
           """
       }
       // Filter removes all 'aligned' channels that fail the check
