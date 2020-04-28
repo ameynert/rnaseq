@@ -1024,7 +1024,7 @@ if (!params.skipAlignment) {
           tag "$name"
           publishDir "${params.outdir}/STAR", mode: 'copy',
               saveAs: {filename ->
-                  if (filename.indexOf(".bam") == -1) "logs/$filename"
+                  if (filename.indexOf(".bam") == -1 && filename !~ /Unmapped/) "logs/$filename"
                   else if (params.saveUnaligned && filename != "where_are_my_files.txt" && filename =~ /Unmapped/) "unmapped/$filename"
                   else if (!params.saveAlignedIntermediates && filename == "where_are_my_files.txt") filename
                   else if (params.saveAlignedIntermediates && filename != "where_are_my_files.txt") filename
